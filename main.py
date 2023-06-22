@@ -1,26 +1,11 @@
-from fastapi import FastAPI
-from fastapi import Request
-from pydantic import BaseModel
-from automation import BOT
+import os
+from selenium import webdriver
 
-
-app = FastAPI()
-
-bots_list = []
-bot = BOT()
-
-class Body(BaseModel):
-    page: str
-
-
-@app.get('/')
-async def run():
-    global bot
-    bot.open_page('https://www.google.com/')
-
-    
-@app.post('/')
-async def page(Body: Body):
-    print(Body)
-    print(Body.page)
-    bot.open_page(Body.page)
+options = webdriver.ChromeOptions()
+options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+options.add_argument("--headless")
+options.add_argument("--disable-dev-shm-usage")
+options.add_argument("--no-sandbox")
+driver = webdriver.Chrome(os.environ.get("CHROMEDRIVER_PATH"), options=options)
+driver.get("http://www.python.org")
+print(driver.title)
