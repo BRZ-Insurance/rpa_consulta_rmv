@@ -12,7 +12,7 @@ if ENVIRONMENT == 'SERVER':
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--no-sandbox")
     print(chrome_options)
-    driver = webdriver.Chrome(service=os.environ.get("CHROMEDRIVER_PATH"),options=chrome_options,keep_alive=True)
+    driver = webdriver.Chrome(chrome_options,os.environ.get("CHROMEDRIVER_PATH"),True)
 
 if ENVIRONMENT == 'LOCAL':
     chrome_options = webdriver.ChromeOptions()
