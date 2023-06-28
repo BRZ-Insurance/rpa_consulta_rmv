@@ -23,3 +23,10 @@ typing_extensions==4.6.3
 urllib3==2.0.3
 uvicorn==0.22.0
 wsproto==1.2.0
+google-api-core==2.11.0
+google-api-python-client==2.90.0
+google-auth==2.20.0
+google-auth-httplib2==0.1.0
+google-auth-oauthlib==1.0.0
+google-cloud==0.34.0
+googleapis-common-protos==1.59.1
