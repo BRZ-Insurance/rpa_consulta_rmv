@@ -7,7 +7,7 @@ import os
 
 class BOT():
     def __init__(self) -> None:
-        ENVIRONMENT = 'SERVER'
+        ENVIRONMENT = 'LOCAL'
 
         if ENVIRONMENT == 'SERVER':
             chrome_options = webdriver.ChromeOptions()

@@ -1,13 +1,18 @@
 import automation
 import threading
 import time
+import fastapi 
 
-bot1 = threading.Thread(target=automation.BOT().run,args=["Reik"])
-bot2 = threading.Thread(target=automation.BOT().run,args=["Of"])
-bot3 = threading.Thread(target=automation.BOT().run,args=["Lake"])
+app = fastapi.FastAPI()
 
-bot1.start()
-bot2.start()
-bot3.start()
+@app.get('/bot')
+def call_bot():
+    bot1 = threading.Thread(target=automation.BOT().run,args=["Reik"])
+    bot2 = threading.Thread(target=automation.BOT().run,args=["Of"])
+    bot3 = threading.Thread(target=automation.BOT().run,args=["Lake"])
+
+    bot1.start()
+    bot2.start()
+    bot3.start()
 
 
