@@ -1,32 +1,13 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chromium import service
-from time import sleep
-import os
+import automation
+import threading
+import time
 
-ENVIRONMENT = 'SERVER'
+bot1 = threading.Thread(target=automation.BOT().run,args=["Reik"])
+bot2 = threading.Thread(target=automation.BOT().run,args=["Of"])
+bot3 = threading.Thread(target=automation.BOT().run,args=["Lake"])
 
-if ENVIRONMENT == 'SERVER':
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-    chrome_service =  service.ChromiumService(executable_path=os.environ.get("CHROMEDRIVER_PATH"))
-    driver = webdriver.Chrome(chrome_options,chrome_service,True)
-    print('\nEXECUTEI\n')
-    
+bot1.start()
+bot2.start()
+bot3.start()
 
-if ENVIRONMENT == 'LOCAL':
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    driver = webdriver.Chrome(options=chrome_options)
-
-driver.get("https://agentweb2.plymouthrock.com/aiui/login")
-print(driver.current_url)
-driver.find_element(By.CSS_SELECTOR,'[id="j_username"]').send_keys('slopes_brz')
-driver.find_element(By.CSS_SELECTOR,'[id="j_password"]').send_keys('As12!@RPA')
-driver.find_element(By.CSS_SELECTOR,'[id="login"]').click()
-sleep(3)
-print(driver.current_url)
 
