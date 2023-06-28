@@ -9,7 +9,7 @@ import Email_API
 
 class BOT():
     def __init__(self) -> None:
-        ENVIRONMENT = 'LOCAL'
+        ENVIRONMENT = 'SERVER'
 
         if ENVIRONMENT == 'SERVER':
             chrome_options = webdriver.ChromeOptions()
