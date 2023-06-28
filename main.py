@@ -1,6 +1,6 @@
-from lib2to3.pgen2.driver import Driver
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chromium import service
 from time import sleep
 import os
 
@@ -12,10 +12,9 @@ if ENVIRONMENT == 'SERVER':
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-    try:
-        webdriver.Chrome(chrome_options=chrome_options,service = os.environ.get("CHROMEDRIVER_PATH"))
-    except:
-        driver = webdriver.Chrome(chrome_options,os.environ.get("CHROMEDRIVER_PATH"),True)
+    chrome_service =  service.ChromiumService(executable_path=os.environ.get("CHROMEDRIVER_PATH"))
+    driver = webdriver.Chrome(chrome_options,chrome_service,True)
+    print('\nEXECUTEI\n')
     
 
 if ENVIRONMENT == 'LOCAL':
