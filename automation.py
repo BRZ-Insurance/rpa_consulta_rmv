@@ -68,10 +68,12 @@ class BOT():
                 sleep(0.2)
                 print('tentando clicar na aba VEHICLE DETAIL')
                 n += 1
-
+        
+        sleep(3)
         n = 0
         while n < 10:
             try:
+                
                 driver.find_elements(By.CSS_SELECTOR,'[class="DocTabText"]')[9].click()
                 sleep(1)
                 J['odometer'] = driver.find_elements(By.CSS_SELECTOR,'[class="DocTableBody"]')[3].text
