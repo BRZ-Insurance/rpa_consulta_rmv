@@ -36,10 +36,14 @@ class CustomThread(threading.Thread):
 
 ###################################
 driver_list = []
+index_rpa = 0
 
 @app.post('/')
 def init():
+    
     global driver_list
+    global index_rpa
+
     ENVIRONMENT = 'SERVER'
     
     if ENVIRONMENT == 'SERVER':
@@ -60,8 +64,6 @@ def init():
         chrome_options.add_experimental_option("prefs", prefs)
         driver = webdriver.Chrome(options=chrome_options)
 
-
-    index_rpa = 2
 
     if index_rpa == 0:
         name_rpa = 'rpa'
@@ -84,12 +86,16 @@ def init():
     if index_rpa == 9:
         name_rpa = 'pra9'
 
+    
+    if index_rpa == 10:
+        index_rpa = 0
+
     USERNAME = f'{name_rpa}@brzinsurance.com'
     PASSWORD = 'M!QY7GfBMKhP&Mjr'
 
     
     driver.get("https://atlas-myrmv.massdot.state.ma.us/eservices/_/")
-    print(driver.current_url)
+    print('\n',driver.current_url,'\n',index_rpa)
     sleep(1)
     driver.find_element(By.CSS_SELECTOR,'[aria-label="Username"]').send_keys(USERNAME)
     driver.find_element(By.CSS_SELECTOR,'[aria-label="Password"]').send_keys(PASSWORD, Keys.ENTER)
@@ -121,6 +127,7 @@ def init():
             sleep(2)
     
     driver_list.append(driver)
+    index_rpa += 1
     return 'WEBDRIVER CRIADO'
     
 
