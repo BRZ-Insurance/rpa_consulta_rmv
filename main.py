@@ -1,3 +1,4 @@
+from unittest.mock import Base
 import automation
 from collections.abc import Callable, Iterable, Mapping
 from typing import Any
@@ -14,6 +15,7 @@ import Email_API
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import os
+from pydantic import BaseModel
 
 ##################
 app = FastAPI()
@@ -37,6 +39,7 @@ class CustomThread(threading.Thread):
 ###################################
 driver_list = []
 index_rpa = 0
+n = 0
 
 @app.post('/')
 def init():
@@ -92,6 +95,8 @@ def init():
 
     USERNAME = f'{name_rpa}@brzinsurance.com'
     PASSWORD = 'M!QY7GfBMKhP&Mjr'
+    INDEX = index_rpa
+    index_rpa += 1
 
     
     driver.get("https://atlas-myrmv.massdot.state.ma.us/eservices/_/")
@@ -102,7 +107,7 @@ def init():
     sleep(8)
     
     # TODO garantir que altera para cada index_rpa
-    verification_code = Email_API.get_Verification_Code_RMV(index_rpa) # index_rpa
+    verification_code = Email_API.get_Verification_Code_RMV(INDEX) # index_rpa
     
     driver.find_element(By.CSS_SELECTOR,'[type="text"]').send_keys(verification_code,Keys.ENTER)
     print('inseri o verification code e cliquei no ENTER')
@@ -121,14 +126,14 @@ def init():
         n += 1
         if n == 3:
             sleep(1)
-            verification_code = Email_API.get_Verification_Code_RMV(1) # index_rpa
+            verification_code = Email_API.get_Verification_Code_RMV(INDEX) # index_rpa
             driver.find_element(By.CSS_SELECTOR,'[type="text"]').send_keys(verification_code,Keys.ENTER)
             print('inseri o verification code e cliquei no ENTER')
             sleep(2)
     
     driver_list.append(driver)
-    index_rpa += 1
-    return 'WEBDRIVER CRIADO'
+    
+    return f'WEBDRIVER CRIADO - index_rpa:{index_rpa-1}'
     
 
                 
@@ -167,19 +172,38 @@ async def call_bot(request: Request):
 
     return 'executado'
 
+
+########################################
+
+
+class VIN(BaseModel):
+    vin: str
+
+
+
+
 @app.post('/rmv')
-async def call_bot(request: Request):
+def call_bot(request: VIN):
     global driver_list
-    J = await request.json()
+    global n
+    print(request.vin)
+    
 
     # bot = automation.BOT().run_rmv
     bot = automation.BOT().run_rmv
 
     # bot_runner = threading.Thread(target=bot,args=[J.get('vin')])
     # bot_runner = CustomThread(target=bot,args=[J.get('vin')])
-    bot_runner = CustomThread(target=bot,args=[J.get('vin'),driver_list[-1]])
+    
+    bot_runner = CustomThread(target=bot,args=[request.vin,driver_list[n]])
+    bot_runner.start()
+    print(n)
+    n += 1
 
-    bot_runner.start()    
+    if n == index_rpa:
+        n = 0
+
+    
     
     super_json = bot_runner.join()
 
