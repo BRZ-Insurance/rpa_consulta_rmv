@@ -170,7 +170,7 @@ async def call_bot(request: Request):
 
     # bot_runner = threading.Thread(target=bot,args=[J.get('vin')])
     # bot_runner = CustomThread(target=bot,args=[J.get('vin')])
-    bot_runner = CustomThread(target=bot,args=[J.get('vin'),driver_list[0]])
+    bot_runner = CustomThread(target=bot,args=[J.get('vin'),driver_list[-1]])
 
     bot_runner.start()    
     

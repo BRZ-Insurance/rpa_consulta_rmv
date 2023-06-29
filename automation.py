@@ -11,10 +11,10 @@ class BOT():
     def __init__(self) -> None:
         
         # n = 0
-        # while n == 0:
+        # while n < 10:
         #     try:
         #         # Fazer algo
-        #         n = 1
+        #         n = 10
         #     except:
         #         sleep(1)
         #         print('alguma coisa')
@@ -46,95 +46,102 @@ class BOT():
         
 
         n = 0
-        while n == 0:
+        while n < 10:
             try:
                 driver.find_elements(By.CSS_SELECTOR,'[class="DocTabText"]')[7].click()
                 sleep(1)
                 J['liens'] = driver.find_elements(By.CSS_SELECTOR,'[class="DocTableBody"]')[3].find_element(By.CSS_SELECTOR,'tr').text
-                n = 1
+                n = 10
             except:
                 sleep(0.2)
                 print('tentando clicar na aba LIENS')
 
         n = 0
-        while n == 0:
+        while n < 10:
             try:
                 driver.find_elements(By.CSS_SELECTOR,'[class="DocTabText"]')[8].click()
                 sleep(1)
                 J['vehicle_details_1'] = driver.find_elements(By.CSS_SELECTOR,'[class="DocTableBody"]')[3].text
                 J['vehicle_details_2'] = driver.find_elements(By.CSS_SELECTOR,'[class="DocTableBody"]')[4].text
-                n = 1
+                n = 10
             except:
                 sleep(0.2)
                 print('tentando clicar na aba VEHICLE DETAIL')
+                n += 1
 
         n = 0
-        while n == 0:
+        while n < 10:
             try:
                 driver.find_elements(By.CSS_SELECTOR,'[class="DocTabText"]')[9].click()
                 sleep(1)
                 J['odometer'] = driver.find_elements(By.CSS_SELECTOR,'[class="DocTableBody"]')[3].text
-                n = 1
+                n = 10
             except:
                 sleep(0.2)
                 print('tentando clicar na aba ODOMETER')
+                n += 1
 
         n = 0
-        while n == 0:
+        while n < 10:
             try:
                 driver.find_elements(By.CSS_SELECTOR,'[class="DocTabText"]')[3].click()
                 sleep(1)
                 J['obligations'] = driver.find_elements(By.CSS_SELECTOR,'[class="DocTableBody"]')[3].text
-                n = 1
+                n = 10
             except:
                 sleep(0.2)
                 print('tentando clicar na aba OBLIGATIONS')
+                n += 1
 
 
         n = 0
-        while n == 0:
+        while n < 10:
             try:
                 driver.find_elements(By.CSS_SELECTOR,'[class="DocTabText"]')[5].click()
                 sleep(1)
                 J['insurance'] = driver.find_elements(By.CSS_SELECTOR,'[class="DocTableBody"]')[4].text
-                n = 1
+                n = 10
             except:
                 sleep(0.2)
                 print('tentando clicar na aba INSURANCE')
+                n += 1
         
         n = 0
-        while n == 0:
+        while n < 10:
             try:
                 trs = driver.find_elements(By.CSS_SELECTOR,'[class="DocTableBody"]')[0].find_elements(By.CSS_SELECTOR,'tr')
                 for tr in trs:
                     key = tr.find_elements(By.CSS_SELECTOR,'td')[0].text
                     value = tr.find_elements(By.CSS_SELECTOR,'td')[2].text
                     J[key] = value
-                n = 1
+                n = 10
             except:
                 sleep(0.2)
                 print('tentando ler as TABELAS PRINCIPAIS - VEHICLE OWNERSHIP')
+                n += 1
 
         n = 0
-        while n == 0:
+        while n < 10:
             try:
                 trs = driver.find_elements(By.CSS_SELECTOR,'[class="DocTableBody"]')[1].find_elements(By.CSS_SELECTOR,'tr')
                 for tr in trs:
                     key = tr.find_elements(By.CSS_SELECTOR,'td')[0].text
                     value = tr.find_elements(By.CSS_SELECTOR,'td')[2].text
                     J[key] = value
-                n = 1
+                n = 10
             except:
                 sleep(0.2)
                 print('tentando ler as TABELAS PRINCIPAIS - REGISTRATION')
+                n += 1
         
         n = 0
-        while n == 0:
+        while n < 10:
             try:
                 driver.find_element(By.CSS_SELECTOR,'[id="ManagerBackNavigation"]').click()
-                n = 1
+                n = 10
             except:
                 sleep(0.2)
                 print('tentando clicar na volta para a tela de SEARCH')
+                n += 1
 
         return J
