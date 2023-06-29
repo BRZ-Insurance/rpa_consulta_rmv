@@ -38,7 +38,8 @@ class CustomThread(threading.Thread):
 driver_list = []
 
 @app.post('/')
-def init(request: Request):
+def init():
+    global driver_list
     ENVIRONMENT = 'SERVER'
     
     if ENVIRONMENT == 'SERVER':
@@ -161,6 +162,7 @@ async def call_bot(request: Request):
 
 @app.post('/rmv')
 async def call_bot(request: Request):
+    global driver_list
     J = await request.json()
 
     # bot = automation.BOT().run_rmv
