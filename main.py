@@ -39,7 +39,7 @@ driver_list = []
 
 @app.post('/')
 def init(request: Request):
-    ENVIRONMENT = 'LOCAL'
+    ENVIRONMENT = 'SERVER'
     
     if ENVIRONMENT == 'SERVER':
         chrome_options = webdriver.ChromeOptions()
