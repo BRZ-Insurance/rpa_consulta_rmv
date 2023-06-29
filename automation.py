@@ -69,14 +69,20 @@ class BOT():
                 print('tentando clicar na aba VEHICLE DETAIL')
                 n += 1
         
-        sleep(3)
         n = 0
         while n < 10:
             try:
-                
-                driver.find_elements(By.CSS_SELECTOR,'[class="DocTabText"]')[9].click()
+                # driver.find_elements(By.CSS_SELECTOR,'[class="DocTabText"]')[9].click()
+                driver.execute_script("""
+                    document.querySelectorAll('span').forEach(
+                    (e)=>{if(e.innerText == 'Odometer'){e.click()}}
+                )""")
                 sleep(1)
                 J['odometer'] = driver.find_elements(By.CSS_SELECTOR,'[class="DocTableBody"]')[3].text
+                if J['odometer'] == None:
+                    J['odometer'] = driver.execute_script("""
+                        return document.querySelectorAll('[data-row="1"]')[3].innerText
+                    """)
                 n = 10
             except:
                 sleep(0.2)
