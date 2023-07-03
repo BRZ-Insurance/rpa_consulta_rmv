@@ -1,4 +1,3 @@
-from unittest.mock import Base
 import automation
 from collections.abc import Callable, Iterable, Mapping
 from typing import Any
@@ -46,10 +45,10 @@ def init():
     
     global driver_list
     global index_rpa
-
-    ENVIRONMENT = 'SERVER'
-    
-    if ENVIRONMENT == 'SERVER':
+    ########################################
+    ENVIRONMENT = 'SERVER_GECKO'
+    ########################################
+    if ENVIRONMENT == 'SERVER_CHROME':
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-dev-shm-usage")
@@ -57,16 +56,36 @@ def init():
         chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
         chrome_service =  service.ChromiumService(executable_path=os.environ.get("CHROMEDRIVER_PATH"))
         driver = webdriver.Chrome(chrome_options,chrome_service,True)
-        print('\nEXECUTEI\n')
-        
+        print('\nEXECUTEI SERVER_CHROME\n')
 
-    if ENVIRONMENT == 'LOCAL':
+    if ENVIRONMENT == 'SERVER_GECKO':
+        from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+        firefox_options = webdriver.FirefoxOptions()
+        firefox_options.log.level = "trace"
+
+        firefox_options.add_argument("-remote-debugging-port=9224")
+        firefox_options.add_argument("-headless")
+        firefox_options.add_argument("-disable-gpu")
+        firefox_options.add_argument("-no-sandbox")
+
+        binary = FirefoxBinary(os.environ.get('FIREFOX_BIN'))
+
+        driver = webdriver.Firefox(firefox_binary=binary,executable_path=os.environ.get('GECKODRIVER_PATH'),options=firefox_options)
+        print('\nEXECUTEI SERVER_GECKO\n')
+
+    if ENVIRONMENT == 'LOCAL_CHROME':
         chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-dev-shm-usage")
         prefs = {"profile.managed_default_content_settings.images": 2} # desabilita o carregamento de imagens
         chrome_options.add_experimental_option("prefs", prefs)
         driver = webdriver.Chrome(options=chrome_options)
 
+    if ENVIRONMENT == 'LOCAL_GECKO':
+        firefox_options = webdriver.FirefoxOptions()
+        # chrome_options.add_argument("--headless")
+        firefox_options.add_argument("--disable-dev-shm-usage")
+        driver = webdriver.Firefox(options=firefox_options)
 
     if index_rpa == 0:
         name_rpa = 'rpa'
@@ -103,8 +122,11 @@ def init():
     print('\n',driver.current_url,'\n',index_rpa)
     sleep(1)
     driver.find_element(By.CSS_SELECTOR,'[aria-label="Username"]').send_keys(USERNAME)
-    driver.find_element(By.CSS_SELECTOR,'[aria-label="Password"]').send_keys(PASSWORD, Keys.ENTER)
-    sleep(8)
+    driver.find_element(By.CSS_SELECTOR,'[aria-label="Password"]').send_keys(PASSWORD,Keys.ENTER)
+    sleep(1)
+    driver.execute_script("""document.querySelectorAll('[class="ButtonCaptionText"]')[0].click()""")
+    
+    sleep(5)
     
     # TODO garantir que altera para cada index_rpa
     verification_code = Email_API.get_Verification_Code_RMV(INDEX) # index_rpa
@@ -188,8 +210,6 @@ def call_bot(request: VIN):
     global n
     print(request.vin)
     
-
-    # bot = automation.BOT().run_rmv
     bot = automation.BOT().run_rmv
 
     # bot_runner = threading.Thread(target=bot,args=[J.get('vin')])
