@@ -45,9 +45,12 @@ def init():
     
     global driver_list
     global index_rpa
+    
     ########################################
-    ENVIRONMENT = 'SERVER_GECKO'
+    ENVIRONMENT = 'SERVER_CHROME'
     ########################################
+
+
     if ENVIRONMENT == 'SERVER_CHROME':
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--headless")
@@ -75,7 +78,7 @@ def init():
 
     if ENVIRONMENT == 'LOCAL_CHROME':
         chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-dev-shm-usage")
         prefs = {"profile.managed_default_content_settings.images": 2} # desabilita o carregamento de imagens
         chrome_options.add_experimental_option("prefs", prefs)
@@ -84,7 +87,7 @@ def init():
     if ENVIRONMENT == 'LOCAL_GECKO':
         firefox_options = webdriver.FirefoxOptions()
         # chrome_options.add_argument("--headless")
-        firefox_options.add_argument("--disable-dev-shm-usage")
+        firefox_options.add_argument("-disable-dev-shm-usage")
         driver = webdriver.Firefox(options=firefox_options)
 
     if index_rpa == 0:
@@ -124,7 +127,10 @@ def init():
     driver.find_element(By.CSS_SELECTOR,'[aria-label="Username"]').send_keys(USERNAME)
     driver.find_element(By.CSS_SELECTOR,'[aria-label="Password"]').send_keys(PASSWORD,Keys.ENTER)
     sleep(1)
-    driver.execute_script("""document.querySelectorAll('[class="ButtonCaptionText"]')[0].click()""")
+    try:
+        driver.execute_script("""document.querySelectorAll('[class="ButtonCaptionText"]')[0].click()""")
+    except:
+        print('não foi necessário realizar o click-login')
     
     sleep(5)
     
