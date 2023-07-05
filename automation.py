@@ -41,7 +41,7 @@ class BOT():
         driver.find_element(By.CSS_SELECTOR,'[id="Dd-6"]').clear()
         sleep(0.2)
         driver.find_element(By.CSS_SELECTOR,'[id="Dd-6"]').send_keys(vin,Keys.ENTER)
-        sleep(1)
+        sleep(2)
         primary_owner = driver.execute_script("""
             primary_owner = ''
             document.querySelectorAll('span').forEach(
@@ -51,7 +51,12 @@ class BOT():
             )
             return primary_owner
         """)
-        driver.find_elements(By.CSS_SELECTOR,'span')[6].click()
+        try:
+            driver.find_elements(By.CSS_SELECTOR,'span')[6].click()
+        except:
+            driver.execute_script("""
+                document.querySelectorAll('span')[6].click()
+            """)
         
 
         n = 0
