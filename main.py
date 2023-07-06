@@ -40,6 +40,9 @@ driver_list = []
 index_rpa = 0
 n = 0
 
+class VIN(BaseModel):
+    vin: str
+
 @app.post('/')
 def init():
     
@@ -144,7 +147,9 @@ def init():
 
     url = r'https://atlas-myrmv.massdot.state.ma.us/eservices/_/#2'
     print(url)
+    
     n = 0
+    
     while url == r'https://atlas-myrmv.massdot.state.ma.us/eservices/_/#2':
         sleep(1)
         driver.execute_script("document.querySelectorAll('span').forEach((e)=>{if(e.innerText == 'Search for a Vehicle'){e.click()}})")
@@ -162,52 +167,9 @@ def init():
     driver_list.append(driver)
     
     return f'WEBDRIVER CRIADO - index_rpa:{index_rpa-1}'
-    
-
-                
-            
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 ########################################
-@app.post('/carrier')
-async def call_bot(request: Request):
-    J = await request.json()
-
-    bot = automation.BOT().run_carrier
-
-    bot_runner = threading.Thread(target=bot,args=[J.get('url')])
-    
-    bot_runner.start()
-    
-    bot_runner.join()
-
-    return 'executado'
-
-
-########################################
-
-
-class VIN(BaseModel):
-    vin: str
-
-
 
 
 @app.post('/rmv')

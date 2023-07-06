@@ -226,7 +226,10 @@ class BOT():
                         return B
                     """)
 
-                    if len(registration) == 7:
+                    if len(registration) == 8:
+                        dados_registration = {"title":registration[0],"plate_number":registration[1],"plate_type":registration[2],"registration":registration[3],"registered_weight":registration[4],"registration_expires":registration[5],"title_status":registration[6],"registration_status":registration[7]}
+                        m = 5
+                    elif len(registration) == 7:
                         dados_registration = {"title":registration[0],"plate_number":registration[1],"plate_type":registration[2],"registration":registration[3],"registration_expires":registration[4],"title_status":registration[5],"registration_status":registration[6]}
                         m = 5
                     elif len(registration) == 6:
