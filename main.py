@@ -48,7 +48,9 @@ def init():
     
     global driver_list
     global index_rpa
+    global n
     
+    print(f'\nPARÂMETROS INICIAIS:\ndriver_list:{driver_list}\nindex_rpa:{index_rpa}\nn:{n}')
     ########################################
     ENVIRONMENT = 'SERVER_CHROME'
     ########################################
@@ -93,26 +95,47 @@ def init():
         firefox_options.add_argument("-disable-dev-shm-usage")
         driver = webdriver.Firefox(options=firefox_options)
 
+    # if index_rpa == 0:
+    #     name_rpa = 'rpa'
+    # if index_rpa == 1:
+    #     name_rpa = 'rpa1'
+    # if index_rpa == 2:
+    #     name_rpa = 'arp2'
+    # if index_rpa == 3:
+    #     name_rpa = 'arp3'
+    # if index_rpa == 4:
+    #     name_rpa = 'par4'
+    # if index_rpa == 5:
+    #     name_rpa = 'par5'
+    # if index_rpa == 6:
+    #     name_rpa = 'rap6'
+    # if index_rpa == 7:
+    #     name_rpa = 'rap7'
+    # if index_rpa == 8:
+    #     name_rpa = 'pra8'
+    # if index_rpa == 9:
+    #     name_rpa = 'pra9'
+
     if index_rpa == 0:
-        name_rpa = 'rpa'
-    if index_rpa == 1:
         name_rpa = 'rpa1'
-    if index_rpa == 2:
+    if index_rpa == 1:
         name_rpa = 'arp2'
-    if index_rpa == 3:
+    if index_rpa == 2:
         name_rpa = 'arp3'
-    if index_rpa == 4:
+    if index_rpa == 3:
         name_rpa = 'par4'
-    if index_rpa == 5:
+    if index_rpa == 4:
         name_rpa = 'par5'
-    if index_rpa == 6:
+    if index_rpa == 5:
         name_rpa = 'rap6'
-    if index_rpa == 7:
+    if index_rpa == 6:
         name_rpa = 'rap7'
-    if index_rpa == 8:
+    if index_rpa == 7:
         name_rpa = 'pra8'
-    if index_rpa == 9:
+    if index_rpa == 8:
         name_rpa = 'pra9'
+    if index_rpa == 9:
+        name_rpa = 'rpa'
 
     
     if index_rpa == 10:
@@ -148,16 +171,15 @@ def init():
     url = r'https://atlas-myrmv.massdot.state.ma.us/eservices/_/#2'
     print(url)
     
-    n = 0
-    
+    t_wait = 0
+
     while url == r'https://atlas-myrmv.massdot.state.ma.us/eservices/_/#2':
         sleep(1)
         driver.execute_script("document.querySelectorAll('span').forEach((e)=>{if(e.innerText == 'Search for a Vehicle'){e.click()}})")
         print('cliquei no Search Vehicles')
         url = driver.current_url
-        print(url)
-        n += 1
-        if n == 3:
+        t_wait += 1
+        if t_wait == 3:
             sleep(1)
             verification_code = Email_API.get_Verification_Code_RMV(INDEX) # index_rpa
             driver.find_element(By.CSS_SELECTOR,'[type="text"]').send_keys(verification_code,Keys.ENTER)
@@ -165,17 +187,21 @@ def init():
             sleep(2)
     
     driver_list.append(driver)
+    print(f'\nPARÂMETROS FINAIS:\ndriver_list:{driver_list}\nindex_rpa:{index_rpa}\nn:{n}')
     
-    return f'WEBDRIVER CRIADO - index_rpa:{index_rpa-1}'
+    return f'WEBDRIVER CRIADO'
 
 
 ########################################
 
-
-@app.post('/rmv')
+@app.post('/rmv222333111')
 def call_bot(request: VIN):
+    
     global driver_list
+    global index_rpa
     global n
+
+    print(f'\nPARÂMETROS INICIAIS:\ndriver_list:{driver_list}\nindex_rpa:{index_rpa}\nn:{n}')
     print(request.vin)
     
     bot = automation.BOT().run_rmv
@@ -185,14 +211,119 @@ def call_bot(request: VIN):
     
     bot_runner = CustomThread(target=bot,args=[request.vin,driver_list[n]])
     bot_runner.start()
-    print(n)
+    
     n += 1
 
     if n == index_rpa:
-        n = 0
+        global fila
+        fila.append(request)
+        print('AGUARDE ATÉ A FILA ESTAR LIBERADA\n')
+        for i in range(600):
+            time.sleep(1)
+            while n < index_rpa:
+                fila.pop(0)
+                bot_runner = CustomThread(target=bot,args=[request.vin,driver_list[n]])
 
-    
+        n = 0
     
     super_json = bot_runner.join()
-
+    print(f'\nPARÂMETROS FINAIS:\ndriver_list:{driver_list}\nindex_rpa:{index_rpa}\nn:{n}')
     return super_json
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+processing = []
+fila = []
+
+@app.post('/rmv')
+def rmv(request: VIN):
+    print('fui chamado para buscar um VIN')
+    
+    global n
+    global processing
+    
+    
+    
+    bot = automation.BOT().run_rmv
+    
+    if len(processing) < index_rpa:
+        print(f'\nPARÂMETROS INICIAIS:\ndriver_list:{driver_list}\nindex_rpa:{index_rpa}\nn:{n}')
+        t = CustomThread(target=bot,args=[request.vin,driver_list[n]])
+        n += 1
+        if n == index_rpa:
+            n = 0
+
+        processing.append(t.start())
+        
+        super_json = t.join()
+        processing.pop()
+
+        print('\n')
+        print(t)
+        print('existe ainda o seguinte número de processos: ',len(processing))
+        print('\n')
+
+        print(f'\nPARÂMETROS FINAIS:\ndriver_list:{driver_list}\nindex_rpa:{index_rpa}\nn:{n}')
+
+        return super_json
+    
+    elif len(processing) == index_rpa:
+        print(f'\nPARÂMETROS INICIAIS:\ndriver_list:{driver_list}\nindex_rpa:{index_rpa}\nn:{n}')
+        global fila
+
+        fila.append(request)
+        
+        print('AGUARDE ATÉ A FILA ESTAR LIBERADA\n')
+        for i in range(600):
+            
+            time.sleep(1)
+            while len(processing) < index_rpa:
+                fila.pop(0)
+                t = CustomThread(target=bot,args=[request.vin,driver_list[n]])
+                n += 1
+                if n == index_rpa:
+                    n = 0
+                processing.append(t.start())
+                
+                super_json = t.join()
+                processing.pop()
+                
+                print(f'\nPARÂMETROS FINAIS:\ndriver_list:{driver_list}\nindex_rpa:{index_rpa}\nn:{n}')
+                
+                return super_json
+    
+    

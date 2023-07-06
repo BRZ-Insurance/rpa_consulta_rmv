@@ -9,26 +9,47 @@ from bs4 import BeautifulSoup
 def get_Verification_Code_RMV(index_rpa):
 
     index_rpa
+    # if index_rpa == 0:
+    #     name_rpa = 'rpa'
+    # if index_rpa == 1:
+    #     name_rpa = 'rpa1'
+    # if index_rpa == 2:
+    #     name_rpa = 'arp2'
+    # if index_rpa == 3:
+    #     name_rpa = 'arp3'
+    # if index_rpa == 4:
+    #     name_rpa = 'par4'
+    # if index_rpa == 5:
+    #     name_rpa = 'par5'
+    # if index_rpa == 6:
+    #     name_rpa = 'rap6'
+    # if index_rpa == 7:
+    #     name_rpa = 'rap7'
+    # if index_rpa == 8:
+    #     name_rpa = 'pra8'
+    # if index_rpa == 9:
+    #     name_rpa = 'pra9'
+
     if index_rpa == 0:
-        name_rpa = 'rpa'
-    if index_rpa == 1:
         name_rpa = 'rpa1'
-    if index_rpa == 2:
+    if index_rpa == 1:
         name_rpa = 'arp2'
-    if index_rpa == 3:
+    if index_rpa == 2:
         name_rpa = 'arp3'
-    if index_rpa == 4:
+    if index_rpa == 3:
         name_rpa = 'par4'
-    if index_rpa == 5:
+    if index_rpa == 4:
         name_rpa = 'par5'
-    if index_rpa == 6:
+    if index_rpa == 5:
         name_rpa = 'rap6'
-    if index_rpa == 7:
+    if index_rpa == 6:
         name_rpa = 'rap7'
-    if index_rpa == 8:
+    if index_rpa == 7:
         name_rpa = 'pra8'
-    if index_rpa == 9:
+    if index_rpa == 8:
         name_rpa = 'pra9'
+    if index_rpa == 9:
+        name_rpa = 'rpa'
     
 
     path = 'token.pickle'
