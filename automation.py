@@ -216,32 +216,25 @@ class BOT():
 
                 m = 0
                 while m < 5:
-                    registration = driver.execute_script("""
-                        B = []
-                        document.querySelectorAll('[class="DocTableBody"]')[1].querySelectorAll('tr').forEach(
-                            (r)=>{
-                                B.push(r.querySelectorAll('td')[2].innerText)
-                            }
+                    dados_registration = driver.execute_script("""
+                        keys = []
+                        values = []
+                        document.querySelector("#Df-6 > tbody").querySelectorAll('tr').forEach(
+                            (e)=>{
+                                key = e.querySelectorAll('td')[0].innerText.replace(' ','_').toLowerCase()
+                            keys.push(key)
+                            value = e.querySelectorAll('td')[2].innerText
+                            values.push(value)
+                            }   
                         )
-                        return B
+                        registration = {}
+                        for (k = 0; k < keys.length; k++){
+                            console.log(keys[k])
+                            registration[keys[k]] = values[k]
+                        }
+                        return registration
                     """)
-
-                    if len(registration) == 8:
-                        dados_registration = {"title":registration[0],"plate_number":registration[1],"plate_type":registration[2],"registration":registration[3],"registered_weight":registration[4],"registration_expires":registration[5],"title_status":registration[6],"registration_status":registration[7]}
-                        m = 5
-                    elif len(registration) == 7:
-                        dados_registration = {"title":registration[0],"plate_number":registration[1],"plate_type":registration[2],"registration":registration[3],"registration_expires":registration[4],"title_status":registration[5],"registration_status":registration[6]}
-                        m = 5
-                    elif len(registration) == 6:
-                        dados_registration = {"title":registration[0],"plate_number":registration[1],"plate_type":registration[2],"title_status":registration[3],"registration_status":registration[4],"registration_cancelled":registration[5]}
-                        m = 5
-                    elif len(registration) == 3:
-                        dados_registration = {"title":registration[0],"title_status":registration[1],"registration_status":registration[2]}
-                        m = 5
-                    else:
-                        dados_registration = {}
-                        m += 1
-                        sleep(0.2)
+                    m = 5
 
             except:
                 sleep(0.2)
