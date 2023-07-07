@@ -1,10 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.chromium import service
 from time import sleep
-import os
-import Email_API
 
 
 class BOT():

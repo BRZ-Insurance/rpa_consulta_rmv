@@ -3,8 +3,7 @@ from collections.abc import Callable, Iterable, Mapping
 from typing import Any
 import threading
 import time
-from fastapi import FastAPI, Request
-import json
+from fastapi import FastAPI
 
 ##################
 from selenium import webdriver
@@ -52,13 +51,13 @@ def init():
     
     print(f'\nPARÂMETROS INICIAIS:\ndriver_list:{driver_list}\nindex_rpa:{index_rpa}\nn:{n}')
     ########################################
-    ENVIRONMENT = 'SERVER_CHROME'
+    ENVIRONMENT = 'LOCAL_CHROME'
     ########################################
 
 
     if ENVIRONMENT == 'SERVER_CHROME':
         chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--headless=new")
         chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
@@ -83,7 +82,7 @@ def init():
 
     if ENVIRONMENT == 'LOCAL_CHROME':
         chrome_options = webdriver.ChromeOptions()
-        # chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--headless=new")
         chrome_options.add_argument("--disable-dev-shm-usage")
         prefs = {"profile.managed_default_content_settings.images": 2} # desabilita o carregamento de imagens
         chrome_options.add_experimental_option("prefs", prefs)
@@ -241,14 +240,15 @@ def rmv(request: VIN):
         print('AGUARDE ATÉ A FILA ESTAR LIBERADA\n')
         for i in range(600):
             
-            time.sleep(1)
+            time.sleep(0.1)
             while len(processing) < index_rpa:
                 fila.pop(0)
                 t = CustomThread(target=bot,args=[request.vin,driver_list[n]])
+                processing.append(t.start())
                 n += 1
                 if n == index_rpa:
                     n = 0
-                processing.append(t.start())
+                
                 
                 super_json = t.join()
                 processing.pop()
