@@ -52,7 +52,7 @@ def init():
     
     print(f'\nPARÂMETROS INICIAIS:\ndriver_list:{driver_list}\nindex_rpa:{index_rpa}\nn:{n}')
     ########################################
-    ENVIRONMENT = 'SERVER_CHROME'
+    ENVIRONMENT = 'LOCAL_CHROME'
     ########################################
 
 
@@ -194,76 +194,6 @@ def init():
 
 ########################################
 
-@app.post('/rmv222333111')
-def call_bot(request: VIN):
-    
-    global driver_list
-    global index_rpa
-    global n
-
-    print(f'\nPARÂMETROS INICIAIS:\ndriver_list:{driver_list}\nindex_rpa:{index_rpa}\nn:{n}')
-    print(request.vin)
-    
-    bot = automation.BOT().run_rmv
-
-    # bot_runner = threading.Thread(target=bot,args=[J.get('vin')])
-    # bot_runner = CustomThread(target=bot,args=[J.get('vin')])
-    
-    bot_runner = CustomThread(target=bot,args=[request.vin,driver_list[n]])
-    bot_runner.start()
-    
-    n += 1
-
-    if n == index_rpa:
-        global fila
-        fila.append(request)
-        print('AGUARDE ATÉ A FILA ESTAR LIBERADA\n')
-        for i in range(600):
-            time.sleep(1)
-            while n < index_rpa:
-                fila.pop(0)
-                bot_runner = CustomThread(target=bot,args=[request.vin,driver_list[n]])
-
-        n = 0
-    
-    super_json = bot_runner.join()
-    print(f'\nPARÂMETROS FINAIS:\ndriver_list:{driver_list}\nindex_rpa:{index_rpa}\nn:{n}')
-    return super_json
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 processing = []
@@ -275,7 +205,8 @@ def rmv(request: VIN):
     
     global n
     global processing
-    
+    global driver_list
+    global index_rpa
     
     
     bot = automation.BOT().run_rmv

@@ -38,8 +38,17 @@ class BOT():
             sleep(2)
 
         J = {"vin/plate":vin,"url":driver.current_url}
-        driver.find_element(By.CSS_SELECTOR,'[id="Dd-6"]').clear()
-        sleep(0.2)
+        
+        n = 0
+        while n < 10:
+            try:
+                driver.find_element(By.CSS_SELECTOR,'[id="Dd-6"]').clear()
+                n = 10
+            except:
+                print('tentando inserir VIN')
+                sleep(1)
+                n += 1
+
         driver.find_element(By.CSS_SELECTOR,'[id="Dd-6"]').send_keys(vin,Keys.ENTER)
         sleep(2)
         primary_owner = driver.execute_script("""
@@ -70,6 +79,7 @@ class BOT():
             except:
                 sleep(0.2)
                 print('tentando clicar na aba LIENS')
+                n += 1
 
         n = 0
         while n < 10:
