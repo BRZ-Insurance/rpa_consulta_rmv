@@ -52,7 +52,7 @@ def init():
     
     print(f'\nPARÂMETROS INICIAIS:\ndriver_list:{driver_list}\nindex_rpa:{index_rpa}\nn:{n}')
     ########################################
-    ENVIRONMENT = 'LOCAL_CHROME'
+    ENVIRONMENT = 'SERVER_CHROME'
     ########################################
 
 
