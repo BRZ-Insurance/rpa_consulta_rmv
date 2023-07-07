@@ -74,7 +74,7 @@ class BOT():
                 liens = driver.find_elements(By.CSS_SELECTOR,'[class="DocTableBody"]')[3].find_element(By.CSS_SELECTOR,'tr').text
                 n = 10
             except:
-                sleep(0.2)
+                sleep(1)
                 print('tentando clicar na aba LIENS')
                 n += 1
 
