@@ -51,7 +51,7 @@ def init():
     
     print(f'\nPARÂMETROS INICIAIS:\ndriver_list:{driver_list}\nindex_rpa:{index_rpa}\nn:{n}')
     ########################################
-    ENVIRONMENT = 'SERVER_CHROME'
+    ENVIRONMENT = 'LOCAL_CHROME'
     ########################################
 
 
@@ -82,7 +82,7 @@ def init():
 
     if ENVIRONMENT == 'LOCAL_CHROME':
         chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument("--headless=new")
+        # chrome_options.add_argument("--headless=new")
         chrome_options.add_argument("--disable-dev-shm-usage")
         prefs = {"profile.managed_default_content_settings.images": 2} # desabilita o carregamento de imagens
         chrome_options.add_experimental_option("prefs", prefs)
@@ -116,11 +116,11 @@ def init():
     #     name_rpa = 'pra9'
 
     if index_rpa == 0:
-        name_rpa = 'rpa1'
+        name_rpa = 'rap7'
     if index_rpa == 1:
-        name_rpa = 'arp2'
+        name_rpa = 'pra8'
     if index_rpa == 2:
-        name_rpa = 'arp3'
+        name_rpa = 'pra9'
     if index_rpa == 3:
         name_rpa = 'par4'
     if index_rpa == 4:
@@ -128,30 +128,38 @@ def init():
     if index_rpa == 5:
         name_rpa = 'rap6'
     if index_rpa == 6:
-        name_rpa = 'rap7'
+        name_rpa = 'rpa1'
     if index_rpa == 7:
-        name_rpa = 'pra8'
+        name_rpa = 'arp2'
     if index_rpa == 8:
-        name_rpa = 'pra9'
+        name_rpa = 'arp3'
     if index_rpa == 9:
         name_rpa = 'rpa'
 
     
-    if index_rpa == 10:
+    if index_rpa >= 10:
         index_rpa = 0
 
     USERNAME = f'{name_rpa}@brzinsurance.com'
     PASSWORD = 'M!QY7GfBMKhP&Mjr'
-    INDEX = index_rpa
+    INDEX = index_rpa  ### 0
     index_rpa += 1
 
     
     driver.get("https://atlas-myrmv.massdot.state.ma.us/eservices/_/")
     print('\n',driver.current_url,'\n',index_rpa)
     sleep(1)
-    driver.find_element(By.CSS_SELECTOR,'[aria-label="Username"]').send_keys(USERNAME)
-    driver.find_element(By.CSS_SELECTOR,'[aria-label="Password"]').send_keys(PASSWORD,Keys.ENTER)
-    sleep(1)
+
+    Z = 0
+    while Z == 0:
+        try:
+            driver.find_element(By.CSS_SELECTOR,'[aria-label="Username"]').send_keys(USERNAME)
+            driver.find_element(By.CSS_SELECTOR,'[aria-label="Password"]').send_keys(PASSWORD,Keys.ENTER)
+            sleep(1)
+            Z = 1
+        except:
+            sleep(1)
+            print('fezendo login')
     try:
         driver.execute_script("""document.querySelectorAll('[class="ButtonCaptionText"]')[0].click()""")
     except:
@@ -162,8 +170,19 @@ def init():
     # TODO garantir que altera para cada index_rpa
     verification_code = Email_API.get_Verification_Code_RMV(INDEX) # index_rpa
     
-    driver.find_element(By.CSS_SELECTOR,'[type="text"]').send_keys(verification_code,Keys.ENTER)
-    print('inseri o verification code e cliquei no ENTER')
+    print(verification_code)
+
+    input('INSIRA MANUAALMENTE')
+
+    # Z = 0
+    # while Z == 0:
+    #     try:
+    #         driver.find_element(By.CSS_SELECTOR,'[type="text"]').send_keys(verification_code,Keys.ENTER)
+    #         print('inseri o verification code e cliquei no ENTER')
+    #         Z = 1
+    #     except:
+    #         sleep(1)
+    #         print('código não inserido')
     
     # TODO trocar a forma de avaliar se o verification code deu certo mesmo
 
@@ -186,6 +205,7 @@ def init():
             sleep(2)
     
     driver_list.append(driver)
+    print(url)
     print(f'\nPARÂMETROS FINAIS:\ndriver_list:{driver_list}\nindex_rpa:{index_rpa}\nn:{n}')
     
     return f'WEBDRIVER CRIADO'
@@ -242,11 +262,21 @@ def rmv(request: VIN):
             
             time.sleep(0.1)
             while len(processing) < index_rpa:
-                fila.pop(0)
-                t = CustomThread(target=bot,args=[request.vin,driver_list[n]])
+                req = fila.pop(0)
+                
+                X = 0
+                while X == 0:
+                    try:
+                        t = CustomThread(target=bot,args=[req.vin,driver_list[n]])
+                        X = 1
+                    except:
+                        n += 1
+                        if n >= index_rpa:
+                            n = 0
+
                 processing.append(t.start())
                 n += 1
-                if n == index_rpa:
+                if n >= index_rpa:
                     n = 0
                 
                 
