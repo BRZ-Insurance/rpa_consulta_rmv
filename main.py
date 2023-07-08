@@ -39,7 +39,7 @@ email_index = 0
 class VIN(BaseModel):
     vin: str
 
-# @app.post('/initiate_webdrivers')
+@app.post('/initiate_webdrivers')
 def init():
     
     global driver_list
@@ -164,10 +164,10 @@ def init():
 
 ########################################
 
-for i in range(3):
-    time.sleep(15)
-    init()
-    email_index += 1
+# for i in range(3):
+#     time.sleep(15)
+#     init()
+#     email_index += 1
 
 processing = []
 fila = []
