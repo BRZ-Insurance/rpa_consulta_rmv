@@ -25,9 +25,9 @@ class CustomThread(threading.Thread):
         self._return = None
 
     def run(self):
-        if self._target is not None:
+        if self._target is not None:            
             self._return = self._target(*self._args,*self._kwargs)
-        
+
     def join(self):
         threading.Thread.join(self)
         return self._return
@@ -39,7 +39,7 @@ email_index = 0
 class VIN(BaseModel):
     vin: str
 
-@app.post('/initiate_webdrivers')
+# @app.post('/initiate_webdrivers')
 def init():
     
     global driver_list
@@ -76,21 +76,21 @@ def init():
     if email_index == 2:
         name_rpa = 'pra9'
     if email_index == 3:
-        name_rpa = 'par4'
+        name_rpa = 'arp3'
     if email_index == 4:
         name_rpa = 'par5'
     if email_index == 5:
         name_rpa = 'rap6'
     if email_index == 6:
-        name_rpa = 'rpa1'
-    if email_index == 7:
         name_rpa = 'arp2'
+    if email_index == 7:
+        name_rpa = 'par4'
     if email_index == 8:
-        name_rpa = 'arp3'
+        name_rpa = 'rpa1'
     if email_index == 9:
         name_rpa = 'rpa'
 
-    email_index += 1
+    # email_index += 1
 
     USERNAME = f'{name_rpa}@brzinsurance.com'
     PASSWORD = 'M!QY7GfBMKhP&Mjr'
@@ -100,15 +100,16 @@ def init():
     sleep(1)
 
     Z = 0
-    while Z == 0:
+    while Z < 20:
         try:
             driver.find_element(By.CSS_SELECTOR,'[aria-label="Username"]').send_keys(USERNAME)
             driver.find_element(By.CSS_SELECTOR,'[aria-label="Password"]').send_keys(PASSWORD,Keys.ENTER)
             sleep(1)
-            Z = 1
+            Z = 20
         except:
             sleep(1)
-            print('fezendo login')
+            print('fazendo login')
+            Z += 1
     try:
         driver.execute_script("""document.querySelectorAll('[class="ButtonCaptionText"]')[0].click()""")
     except:
@@ -158,20 +159,31 @@ def init():
     
     return f'WEBDRIVER CRIADO'
 
+### Caso uma instância do Webdriver é fechada, ainda assim o driver_list continua considerando a existência da instência 
+
 
 ########################################
 
-
+for i in range(3):
+    init()
+    email_index += 1
 
 processing = []
 fila = []
 
 @app.post('/rmv')
 def rmv(request: VIN):
-    print('fui chamado para buscar um VIN')
     
+    print('fui chamado para buscar um VIN')
     global processing
-    global driver_list    
+    global driver_list
+    
+    if len(driver_list) < 3:
+        global email_index
+        init()
+        email_index += 1
+        if email_index == 10:
+            email_index = 0
     
     bot = automation.BOT().run_rmv
     
@@ -184,9 +196,17 @@ def rmv(request: VIN):
 
             if DRIVER[1] == 0:
                 DRIVER[1] = 1
-                t = CustomThread(target=bot,args=[request.vin,DRIVER[0]])
-                processing.append(t.start())
-                super_json = t.join()
+                try: # existe a possibilidadte da instância ter desconectado com o DevTools. Por isso, é necessário tirar a instância da lista e criar outra no local
+                    t = CustomThread(target=bot,args=[request.vin,DRIVER[0]])
+                    processing.append(t.start())
+                    super_json = {}
+                    super_json = t.join()
+                    if super_json == 'X':
+                        driver_list.remove(DRIVER)
+                        init()
+                        email_index += 1
+                except:
+                    driver_list.remove(DRIVER)
                 processing.pop()
                 DRIVER[1] = 0
                 break
@@ -222,7 +242,7 @@ def rmv(request: VIN):
                         super_json = t.join()
                         processing.pop()
                         DRIVER[1] = 0
-                        break    
+                        break
                         
                 super_json = t.join()
                 

@@ -25,7 +25,12 @@ class BOT():
         return self.driver
 
     def run_rmv(self,vin,driver: webdriver.Chrome):
-
+        
+        try:
+            print(driver.current_url)
+        except:
+            return 'X'
+        
         if len(driver.find_elements(By.CSS_SELECTOR,'[type="password"]')) == 1:
             PASSWORD = 'M!QY7GfBMKhP&Mjr'
             driver.find_elements(By.CSS_SELECTOR,'[type="password"]')[0].send_keys(PASSWORD,Keys.ENTER)
@@ -169,7 +174,7 @@ class BOT():
                             if(t.querySelectorAll('tr')[1].querySelectorAll('td').length == 12 ){
                             t.querySelectorAll('tr')[1].querySelectorAll('td').forEach(
                                 (e)=>{
-                                    D.push(e.innerText.toUpperCase())  
+                                    D.push(e.innerText.toUpperCase())
                                 })
                             }
                         }
