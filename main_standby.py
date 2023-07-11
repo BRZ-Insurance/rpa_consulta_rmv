@@ -178,7 +178,7 @@ def rmv(request: VIN):
     global processing
     global driver_list
     
-    if len(driver_list) < 3:
+    if len(driver_list) == 0:
         global email_index
         init()
         email_index += 1

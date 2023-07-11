@@ -106,6 +106,7 @@ class BOT():
                 print('tentando clicar na aba VEHICLE DETAIL')
                 n += 1
         
+        dados_odometer = {}
         n = 0
         while n < 10:
             try:
